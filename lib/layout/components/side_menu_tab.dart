@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:custos_task/utils/palette.dart';
 import 'package:flutter/material.dart';
 
@@ -28,10 +29,10 @@ class SideMenuTab extends StatelessWidget {
               icon,
               color: isSelected ? Palette.kBlackColor : Palette.kOffWhiteColor,
             ),
-            Text(
+            AutoSizeText(
               label,
               style: TextStyle(
-                fontSize: 15,
+                // fontSize: 15,
                 fontWeight: FontWeight.w700,
                 color:
                     isSelected ? Palette.kBlackColor : Palette.kOffWhiteColor,

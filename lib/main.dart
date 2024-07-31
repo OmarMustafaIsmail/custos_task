@@ -18,19 +18,25 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AppLayoutProvider()),
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-      ],
-      child: MaterialApp.router(
-        debugShowCheckedModeBanner: false,
-        title: 'Custos Task',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        routerConfig: router,
+    return ChangeNotifierProvider(
+      create: (_) => AuthProvider()..init(),
+      child: Consumer<AuthProvider>(
+        builder: (context, value, Widget? child) {
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider(create: (_) => AppLayoutProvider()),
+            ],
+            child: MaterialApp.router(
+              debugShowCheckedModeBanner: false,
+              title: 'Custos Task',
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                useMaterial3: true,
+              ),
+              routerConfig: router,
+            ),
+          );
+        },
       ),
     );
   }

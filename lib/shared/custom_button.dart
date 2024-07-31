@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:custos_task/utils/palette.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -88,7 +89,7 @@ class _CustomButtonState extends State<CustomButton> {
                             ),
                           ),
                         )
-                      : Text(
+                      : AutoSizeText(
                           widget.buttonText,
                           textAlign: TextAlign.center,
                           style: TextStyle(

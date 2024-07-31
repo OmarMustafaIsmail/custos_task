@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -9,7 +10,7 @@ class DashboardScreen extends StatelessWidget {
       body: Column(
         children: [
           Center(
-            child: Text('DASHBOARD'),
+            child: AutoSizeText('DASHBOARD'),
           )
         ],
       ),

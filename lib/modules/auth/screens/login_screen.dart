@@ -1,4 +1,4 @@
-// screens/login_screen.dart
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:custos_task/modules/auth/provider/auth_provider.dart';
 import 'package:custos_task/shared/custom_button.dart';
 import 'package:custos_task/shared/custom_textfield.dart';
@@ -6,9 +6,7 @@ import 'package:custos_task/utils/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
-// import 'package:provider/provider.dart';
-// import '../providers/auth_provider.dart';
+
 
 class LoginScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
@@ -20,9 +18,10 @@ class LoginScreen extends StatelessWidget {
   Future<void> _login(BuildContext context) async {
     if (_loginFormKey.currentState!.validate()) {
       _loginFormKey.currentState!.save();
-      await Provider.of<AuthProvider>(context, listen: false).login(
+     await Provider.of<AuthProvider>(context, listen: false).login(
         _emailController.text,
         _passwordController.text,
+       context: context
       );
     }
   }
@@ -30,15 +29,14 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.sizeOf(context).height;
-    final width = MediaQuery.sizeOf(context).width;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        centerTitle: true,
+        title: const AutoSizeText(
           'Login',
           style: TextStyle(
             color: Palette.kWhiteColor,
-            fontSize: 20,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -96,9 +94,9 @@ class LoginScreen extends StatelessWidget {
                         height: height * 0.02,
                       ),
                       SizedBox(
-                        width: width * 0.1,
+
                         child: CustomButton(
-                          loading: value.isLoading,
+                          loading: value.isLoadingLogin,
                           radius: 10,
                           size: 15,
                           buttonText: 'Login',
@@ -112,11 +110,11 @@ class LoginScreen extends StatelessWidget {
                       ),
                       InkWell(
                         onTap: () => context.push('/register'),
-                        child: const Text(
+                        child: const AutoSizeText(
                           'Don\'t have an account?',
                           style: TextStyle(
                             color: Palette.kBlueColor,
-                            fontSize: 10,
+                            // fontSize: 10,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
