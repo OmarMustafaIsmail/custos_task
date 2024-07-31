@@ -7,6 +7,7 @@ import 'package:custos_task/utils/router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+
 class AuthProvider with ChangeNotifier {
   final SecureStorageService _secureStorage = SecureStorageService();
   final AuthService _authService = AuthService();

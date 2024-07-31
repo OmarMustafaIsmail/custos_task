@@ -1,5 +1,6 @@
 import 'package:custos_task/layout/provider/app_layout_provider.dart';
 import 'package:custos_task/modules/auth/provider/auth_provider.dart';
+import 'package:custos_task/modules/files/provider/file_provider.dart';
 import 'package:custos_task/utils/network/local/cache_manager.dart';
 import 'package:custos_task/utils/network/remote/dio_manager.dart';
 import 'package:custos_task/utils/router.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
           return MultiProvider(
             providers: [
               ChangeNotifierProvider(create: (_) => AppLayoutProvider()),
+              ChangeNotifierProvider(create: (_) => FileProvider()..initialize()),
             ],
             child: MaterialApp.router(
               debugShowCheckedModeBanner: false,
