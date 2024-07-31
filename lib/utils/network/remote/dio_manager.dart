@@ -1,5 +1,6 @@
 import 'package:custos_task/utils/network/remote/end_points.dart';
 import 'package:dio/dio.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 class DioHelper {
   static Dio? dio;
@@ -11,6 +12,20 @@ class DioHelper {
         receiveDataWhenStatusError: true,
       ),
     );
+    dio!.interceptors.add(PrettyDioLogger(
+        requestHeader: true,
+        requestBody: true,
+        responseBody: true,
+        responseHeader: false,
+        error: true,
+        filter: (options, args) {
+          // don't print requests with uris containing '/posts'
+          if (options.path.contains('/posts')) {
+            return false;
+          }
+          // don't print responses with unit8 list data
+          return !args.isResponse || !args.hasUint8ListData;
+        }));
   }
 
   static Future<Response> getData(
