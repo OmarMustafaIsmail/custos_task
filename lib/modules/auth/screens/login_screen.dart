@@ -29,103 +29,106 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final height = MediaQuery.sizeOf(context).height;
 
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const AutoSizeText(
-          'Login',
-          style: TextStyle(
-            color: Palette.kWhiteColor,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        // leadingWidth: width * 0.08,
-        // leading: SvgPicture.asset(
-        //   'assets/icons/custos_logo.svg',
-        //   colorFilter: const ColorFilter.mode(
-        //     Palette.kWhiteColor,
-        //     BlendMode.srcATop,
-        //   ),
-        // ),
-        backgroundColor: Palette.kAppBarColor,
-      ),
-      body: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(flex: 3, child: Container()),
-          Expanded(
-            flex: 5,
-            child: Form(
-              key: _loginFormKey,
-              child: Consumer<AuthProvider>(
-                builder:
-                    (BuildContext context, AuthProvider value, Widget? child) {
-                  return Column(
-                    children: [
-                      SizedBox(
-                        height: height * 0.1,
-                      ),
-                      CustomTextFormField(
-                        controller: _emailController,
-                        labelText: 'Email',
-                        validator: (String? s) {
-                          if (!AuthProvider.isEmail(s!)) {
-                            return 'Please enter a valid email';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(
-                        height: height * 0.02,
-                      ),
-                      CustomTextFormField(
-                        controller: _passwordController,
-                        obscureText: true,
-                        labelText: 'Password',
-                        validator: (String? s) {
-                          if (s!.isEmpty || s.length < 8) {
-                            return 'Password should be at least 8 characters';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(
-                        height: height * 0.02,
-                      ),
-                      SizedBox(
-
-                        child: CustomButton(
-                          loading: value.isLoadingLogin,
-                          radius: 10,
-                          size: 15,
-                          buttonText: 'Login',
-                          onPressed: () => _login(context),
-                          buttonColor: ButtonColor.primary,
-                          height: height * 0.05,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 2,
-                      ),
-                      InkWell(
-                        onTap: () => context.push('/register'),
-                        child: const AutoSizeText(
-                          'Don\'t have an account?',
-                          style: TextStyle(
-                            color: Palette.kBlueColor,
-                            // fontSize: 10,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      )
-                    ],
-                  );
-                },
-              ),
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const AutoSizeText(
+            'Login',
+            style: TextStyle(
+              color: Palette.kWhiteColor,
+              fontWeight: FontWeight.w700,
             ),
           ),
-          Expanded(flex: 3, child: Container()),
-        ],
+          // leadingWidth: width * 0.08,
+          // leading: SvgPicture.asset(
+          //   'assets/icons/custos_logo.svg',
+          //   colorFilter: const ColorFilter.mode(
+          //     Palette.kWhiteColor,
+          //     BlendMode.srcATop,
+          //   ),
+          // ),
+          backgroundColor: Palette.kAppBarColor,
+        ),
+        body: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(flex: 3, child: Container()),
+            Expanded(
+              flex: 5,
+              child: Form(
+                key: _loginFormKey,
+                child: Consumer<AuthProvider>(
+                  builder:
+                      (BuildContext context, AuthProvider value, Widget? child) {
+                    return Column(
+                      children: [
+                        SizedBox(
+                          height: height * 0.1,
+                        ),
+                        CustomTextFormField(
+                          controller: _emailController,
+                          labelText: 'Email',
+                          validator: (String? s) {
+                            if (!AuthProvider.isEmail(s!)) {
+                              return 'Please enter a valid email';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: height * 0.02,
+                        ),
+                        CustomTextFormField(
+                          controller: _passwordController,
+                          obscureText: true,
+                          labelText: 'Password',
+                          validator: (String? s) {
+                            if (s!.isEmpty || s.length < 8) {
+                              return 'Password should be at least 8 characters';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: height * 0.02,
+                        ),
+                        SizedBox(
+
+                          child: CustomButton(
+                            loading: value.isLoadingLogin,
+                            radius: 10,
+                            size: 15,
+                            buttonText: 'Login',
+                            onPressed: () => _login(context),
+                            buttonColor: ButtonColor.primary,
+                            height: height * 0.05,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 2,
+                        ),
+                        InkWell(
+                          onTap: () => context.push('/register'),
+                          child: const AutoSizeText(
+                            'Don\'t have an account?',
+                            style: TextStyle(
+                              color: Palette.kBlueColor,
+                              // fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        )
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
+            Expanded(flex: 3, child: Container()),
+          ],
+        ),
       ),
     );
   }

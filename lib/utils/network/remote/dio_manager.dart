@@ -29,10 +29,11 @@ class DioHelper {
   }
 
   static Future<Response> getData(
-      {required url, Map<String, dynamic>? query, String? token}) async {
+      {required url, Map<String, dynamic>? query, String? token,ResponseType? responseType}) async {
     dio!.options.headers = {
       'content-type': 'application/json',
-      'Authorization': token != null ? "Bearer $token" : ""
+      if (token != null) 'user-token': token
+
     };
     dio!.options.validateStatus = (status) {
       if (status == 401) {
@@ -41,7 +42,9 @@ class DioHelper {
         return true;
       }
     };
-
+    if(responseType !=null) {
+      dio!.options.responseType = responseType;
+    }
     return await dio!.get(url, queryParameters: query);
   }
 
@@ -80,12 +83,40 @@ class DioHelper {
     };
     dio!.options.headers = {
       'Content-Type': contentType ?? 'application/json',
-      'Authorization': token != null ? "Bearer $token" : "",
+      if (token != null) 'user-token': token,
       'Accept-Encoding': "gzip, deflate, br",
       'Accept': '*/*'
     };
 
     return dio!.post(
+      url,
+      queryParameters: query,
+      data: data ?? "",
+    );
+  }
+
+  static Future<Response> putData(
+      {required String url,
+        Map<String, dynamic>? query,
+        var data,
+        String lang = 'en',
+        String? token,
+        String? contentType}) async {
+    dio!.options.validateStatus = (status) {
+      if (status == 422) {
+        return true;
+      } else {
+        return true;
+      }
+    };
+    dio!.options.headers = {
+      'Content-Type': contentType ?? 'application/json',
+      if (token != null) 'user-token': token,
+      'Accept-Encoding': "gzip, deflate, br",
+      'Accept': '*/*'
+    };
+
+    return dio!.put(
       url,
       queryParameters: query,
       data: data ?? "",

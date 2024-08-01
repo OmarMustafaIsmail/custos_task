@@ -25,10 +25,10 @@ class AuthProvider with ChangeNotifier {
    final token = await _secureStorage.getUserToken();
    debugPrint(token.toString());
    if(token !=null){
+     router.go('/layout');
      _isAuthenticated = true;
      _userToken = token;
      notifyListeners();
-     router.go('/layout');
      return;
    }
    router.go('/');
@@ -53,13 +53,13 @@ class AuthProvider with ChangeNotifier {
     if (result.containsKey('user-token')) {
       _userToken = result['user-token'];
       _isAuthenticated = true;
-      UserModel user;
-      user = UserModel.fromJson(result);
-      debugPrint(user.toString());
+      UserModel user = UserModel.fromJson(result);
       await _secureStorage.saveUserToken(_userToken);
-      await _secureStorage.saveUser(UserModel.fromJson(result));
+      await _secureStorage.saveUser(user);
+      var userAfter = await _secureStorage.getUser();
+      debugPrint(userAfter.toString());
       _setLoading(false);
-      router.go('/layout');
+
       notifyListeners();
     } else {
       // Handle login error
@@ -67,10 +67,13 @@ class AuthProvider with ChangeNotifier {
       _setLoading(false);
       if (context.mounted) {
         showFloatingSnackBar(
-            context, result['message'], Palette.kDangerRedColor,textColor:Palette.kOffWhiteColor);
+          context,
+          result['message'],
+          Palette.kDangerRedColor,
+          textColor: Palette.kOffWhiteColor,
+        );
       }
       notifyListeners();
-
     }
   }
 
@@ -97,6 +100,7 @@ class AuthProvider with ChangeNotifier {
   Future<void> logout() async {
     _userToken = '';
     _isAuthenticated = false;
+    await _authService.logout();
     await _secureStorage.deleteUserToken();
     await _secureStorage.deleteUser();
     notifyListeners();

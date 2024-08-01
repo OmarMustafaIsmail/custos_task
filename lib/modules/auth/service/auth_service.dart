@@ -1,7 +1,8 @@
-// services/auth_service.dart
 
+import 'package:custos_task/utils/network/local/secure_storage.dart';
 import 'package:custos_task/utils/network/remote/dio_manager.dart';
 import 'package:custos_task/utils/network/remote/end_points.dart';
+import 'package:flutter/material.dart';
 
 class AuthService {
   Future<Map<String, dynamic>> login(String email, String password) async {
@@ -34,6 +35,19 @@ class AuthService {
     } catch (e) {
       // Handle error
       return {'error': e.toString()};
+    }
+  }
+
+  Future<void> logout()async{
+    final SecureStorageService service = SecureStorageService();
+    final token = await  service.getUserToken();
+    try{
+       await DioHelper.getData(
+        url: ApiConstants.logoutUser,
+        token: token
+      );
+    }catch(e){
+    debugPrint(e.toString());
     }
   }
 }

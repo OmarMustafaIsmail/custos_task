@@ -1,11 +1,11 @@
-import 'dart:io';
+import 'dart:typed_data';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:custos_task/modules/files/component/file_card.dart';
 import 'package:custos_task/modules/files/provider/file_provider.dart';
+import 'package:custos_task/utils/responsive.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 
 class FilesScreen extends StatelessWidget {
   const FilesScreen({super.key});
@@ -14,42 +14,63 @@ class FilesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final fileProvider = Provider.of<FileProvider>(context);
 
+    // Initialize file provider if not already initialized
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!fileProvider.isInitialized) {
+        fileProvider.initialize();
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: const AutoSizeText('File Upload and List'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.upload_file),
-            onPressed: () async {
-              final result = await FilePicker.platform.pickFiles();
-              if (result != null) {
-                final file = File(result.files.single.path!);
-                await fileProvider.uploadFile(file);
-              }
-            },
-          ),
+          if (fileProvider.isUploading)
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: CircularProgressIndicator(),
+            ),
+          if (!fileProvider.isUploading)
+            IconButton(
+              icon: const Icon(Icons.upload_file),
+              onPressed: () async {
+                FilePickerResult? result = await FilePicker.platform.pickFiles(
+                  type: FileType.any,
+                  withData: true,
+                );
+
+                if (result != null) {
+                  Uint8List fileBytes = result.files.first.bytes!;
+                  String fileName = result.files.first.name;
+                  fileProvider.uploadFile(fileName, fileBytes);
+                }
+              },
+            ),
         ],
       ),
-      body: FutureBuilder(
-        future: fileProvider.initialize(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-
+      body: Consumer<FileProvider>(
+        builder: (context, provider, child) {
           return LayoutBuilder(
             builder: (context, constraints) {
-              final crossAxisCount = constraints.maxWidth > 1200
-                  ? 4
-                  : constraints.maxWidth > 800
-                  ? 3
-                  : 2;
-              final childAspectRatio = constraints.maxWidth > 600 ? 4 / 3 : 3 / 2;
+              // Determine layout based on screen size
+              final isTablet = Responsive.isTablet(context);
+              final isDesktop = Responsive.isDesktop(context);
 
+              final crossAxisCount = isDesktop
+                  ? 4
+                  : isTablet
+                      ? 3
+                      : 2;
+              final childAspectRatio = isDesktop
+                  ? 4 / 3
+                  : isTablet
+                      ? 3 / 2
+                      : 2 / 3;
+              if (!fileProvider.isInitialized) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
               return GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: crossAxisCount,
@@ -58,12 +79,14 @@ class FilesScreen extends StatelessWidget {
                   mainAxisSpacing: 8.0,
                 ),
                 padding: const EdgeInsets.all(8.0),
-                itemCount: fileProvider.files.length,
+                itemCount: provider.files.length,
                 itemBuilder: (context, index) {
-                  final file = fileProvider.files[index];
+                  final file = provider.files[index];
                   return FileCard(
                     file: file,
-                    onDownload: () {}, // Placeholder, download functionality omitted
+                    onDownload: () {
+                      provider.downloadFile(fileName: file.name);
+                    }, // Placeholder, download functionality omitted
                   );
                 },
               );

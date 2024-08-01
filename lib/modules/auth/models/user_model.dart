@@ -18,7 +18,7 @@ class UserModel extends Equatable {
 
   // Convert a User object to a Map
   Map<String, dynamic> toJson() => {
-    'id': id,
+    'ownerId': id,
     'email': email,
   };
 

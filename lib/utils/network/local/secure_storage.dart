@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:custos_task/modules/auth/models/user_model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SecureStorageService {
@@ -26,6 +27,7 @@ class SecureStorageService {
   Future<UserModel?> getUser() async {
     final userJson = await _storage.read(key: 'user');
     if (userJson != null) {
+      debugPrint(userJson.toString());
       return UserModel.fromJson(json.decode(userJson));
     }
     return null;

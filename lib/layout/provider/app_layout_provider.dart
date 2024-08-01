@@ -3,7 +3,7 @@ import 'package:custos_task/modules/files/screens/files_screen.dart';
 import 'package:flutter/material.dart';
 
 class AppLayoutProvider with ChangeNotifier {
-  String _selectedScreen = 'dashboard';
+  String _selectedScreen = 'files';
 
   String get selectedScreen => _selectedScreen;
 
