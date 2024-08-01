@@ -17,7 +17,7 @@ class FilesScreen extends StatelessWidget {
     // Initialize file provider if not already initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!fileProvider.isInitialized) {
-        fileProvider.initialize();
+        fileProvider.initialize(context);
       }
     });
 
@@ -38,11 +38,12 @@ class FilesScreen extends StatelessWidget {
                   type: FileType.any,
                   withData: true,
                 );
-
                 if (result != null) {
                   Uint8List fileBytes = result.files.first.bytes!;
                   String fileName = result.files.first.name;
-                  fileProvider.uploadFile(fileName, fileBytes);
+                  if(context.mounted) {
+                    fileProvider.uploadFile(fileName, fileBytes, context);
+                  }
                 }
               },
             ),

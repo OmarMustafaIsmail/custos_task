@@ -1,7 +1,11 @@
 import 'package:custos_task/modules/files/models/files_model.dart';
 import 'package:custos_task/modules/files/service/file_service.dart';
+import 'package:custos_task/shared/custom_snakbar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:math' as math;
+
+import '../../../utils/palette.dart';
 
 class FileProvider with ChangeNotifier {
   final FileService _fileService = FileService();
@@ -18,24 +22,34 @@ class FileProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> uploadFile(String fileName, Uint8List fileBytes) async {
+  Future<void> uploadFile(String fileName, Uint8List fileBytes,BuildContext context) async {
     _setUploading(true);
     final result = await _fileService.uploadFile(fileName, fileBytes);
     _setUploading(false);
     if (result != null) {
       debugPrint("File uploaded successfully: $result");
       // Fetch user files after upload
-      await fetchUserFiles();
+      if(context.mounted) {
+        await fetchUserFiles(context);
+      }
     } else {
+      if (context.mounted) {
+        showFloatingSnackBar(
+            context, 'File upload failed', Palette.kDangerRedColor,textColor:Palette.kOffWhiteColor);
+      }
       debugPrint("File upload failed");
     }
   }
 
-  Future<void> fetchUserFiles() async {
+  Future<void> fetchUserFiles(context) async {
     try {
       _files = await _fileService.listFiles();
       notifyListeners();
     } catch (e) {
+      if (context.mounted) {
+        showFloatingSnackBar(
+            context, 'Error fetching user files', Palette.kDangerRedColor,textColor:Palette.kOffWhiteColor);
+      }
       debugPrint("Error fetching user files: $e");
     }
   }
@@ -70,9 +84,9 @@ class FileProvider with ChangeNotifier {
     return false;
   }
 
-  Future<void> initialize() async {
+  Future<void> initialize(BuildContext context) async {
     if (!_isInitialized) {
-      await fetchUserFiles();
+      await fetchUserFiles(context);
       _isInitialized = true;
     }
   }
