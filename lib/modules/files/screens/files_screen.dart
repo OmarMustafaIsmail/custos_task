@@ -13,6 +13,7 @@ class FilesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fileProvider = Provider.of<FileProvider>(context);
+    final height = MediaQuery.of(context).size.height;
 
     // Initialize file provider if not already initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -51,7 +52,18 @@ class FilesScreen extends StatelessWidget {
       ),
       body: Consumer<FileProvider>(
         builder: (context, provider, child) {
-          return LayoutBuilder(
+          if(provider.files.isEmpty && provider.isInitialized){
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('assets/images/empty.png',height: height * 0.45,),
+                  const AutoSizeText("You Don't Have files yet!")
+                ],
+              ),
+            );
+          }
+          return  LayoutBuilder(
             builder: (context, constraints) {
               // Determine layout based on screen size
               final isTablet = Responsive.isTablet(context);

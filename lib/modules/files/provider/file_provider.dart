@@ -44,12 +44,9 @@ class FileProvider with ChangeNotifier {
   Future<void> fetchUserFiles(context) async {
     try {
       _files = await _fileService.listFiles();
+      _isInitialized = true;
       notifyListeners();
     } catch (e) {
-      if (context.mounted) {
-        showFloatingSnackBar(
-            context, 'Error fetching user files', Palette.kDangerRedColor,textColor:Palette.kOffWhiteColor);
-      }
       debugPrint("Error fetching user files: $e");
     }
   }

@@ -64,8 +64,11 @@ class FileService {
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
         return data.map((file) => FileModel.fromJson(file)).toList();
-      } else {
-        throw Exception('Failed to load files');
+      } else if(response.data['code'] == 6007){
+        return <FileModel>[];
+      }
+      else{
+        throw const FetchException('Error listing file:');
       }
     } catch (e) {
       debugPrint('Error listing file: $e');

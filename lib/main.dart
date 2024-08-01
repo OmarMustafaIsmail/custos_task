@@ -24,14 +24,14 @@ class MyApp extends StatelessWidget {
       child: Consumer<AuthProvider>(
         builder: (context, value, Widget? child) {
           final signedInProviders = [
-
             ChangeNotifierProvider(create: (_) => FileProvider()..initialize(context)),
           ];
           return MultiProvider(
             providers: [
               ChangeNotifierProvider(create: (_) => AppLayoutProvider()),
-              ChangeNotifierProvider(create: (_) => FileProvider()..initialize(context)),
-             if(value.isAuthenticated)...signedInProviders
+              ChangeNotifierProvider(create: (_) => FileProvider()),
+
+              if(value.isAuthenticated)...signedInProviders
             ],
             child: MaterialApp.router(
               debugShowCheckedModeBanner: false,

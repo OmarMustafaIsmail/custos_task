@@ -7,58 +7,66 @@ import 'package:custos_task/utils/router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
-/// AuthRepository is a data repository for handling authentication-related operations.
-/// It communicates with the AuthService to perform login, registration, etc.
+/// AuthProvider is responsible for managing authentication-related operations
+/// including login, registration, and logout. It communicates with the AuthService
+/// to perform these actions and updates the authentication state accordingly.
 class AuthProvider with ChangeNotifier {
   final SecureStorageService _secureStorage = SecureStorageService();
   final AuthService _authService = AuthService();
-  bool _isAuthenticated = false;
-  String _userToken = '';
-  bool _isLoadingLogin = false;
-  bool _isLoadingRegister = false;
+  late bool _isAuthenticated = false; // Tracks whether the user is authenticated
+  String _userToken = ''; // Stores the user's authentication token
+  bool _isLoadingLogin = false; // Tracks the loading state for login
+  bool _isLoadingRegister = false; // Tracks the loading state for registration
+  bool _isInitialized = false; // Tracks whether the initialization process is complete
 
+  // Getters to expose loading states and initialization status
   bool get isLoadingLogin => _isLoadingLogin;
   bool get isLoadingRegister => _isLoadingRegister;
+  bool get isInitialized => _isInitialized;
+  bool get isAuthenticated => _isAuthenticated;
 
-
-  /// Initializes the authentication process by checking if a user token is available.
+  /// Initializes the authentication state by checking for a user token.
   ///
-  /// This function retrieves the user token from secure storage. If a token is found, it sets
+  /// Retrieves the user token from secure storage. If a token is found, it sets
   /// the user as authenticated, updates the internal state, and navigates to the layout page.
-  /// If no token is found, it navigates to the home page.
-  ///
-  /// This function is asynchronous and uses the `await` keyword to wait for the token retrieval.
-  init()async{
+  /// If no token is found, it navigates to the login page.
+  /// This function is asynchronous and uses the `await` keyword to handle token retrieval.
+  Future<void> init() async {
     debugPrint("started init");
-   final token = await _secureStorage.getUserToken();
-   debugPrint(token.toString());
-   if(token !=null){
-     // user is authenticated redirect to layout
-     router.go('/layout');
-     _isAuthenticated = true;
-     _userToken = token;
-     notifyListeners();
-     return;
-   }
-    // user is not authenticated redirect to login page
-
-    router.go('/');
+    final token = await _secureStorage.getUserToken();
+    debugPrint(token.toString());
+    if (token != null) {
+      // User is authenticated, redirect to layout
+      _isAuthenticated = true;
+      _userToken = token;
+      router.go('/layout');
+    } else {
+      // User is not authenticated, redirect to login page
+      router.go('/login');
+    }
+    _isInitialized = true; // Mark initialization as complete
+    notifyListeners();
   }
 
-  void _setLoading(bool value,{bool login = true}) {
-    if(login) {
+  /// Sets the loading state for either login or registration.
+  ///
+  /// Updates the loading state based on the `login` flag. If `login` is true,
+  /// it updates `_isLoadingLogin`. Otherwise, it updates `_isLoadingRegister`.
+  void _setLoading(bool value, {bool login = true}) {
+    if (login) {
       _isLoadingLogin = value;
-    }else{
+    } else {
       _isLoadingRegister = value;
     }
     notifyListeners();
   }
 
-  bool get isAuthenticated => _isAuthenticated;
-
-  Future<void> login(String email, String password,
-      {required BuildContext context}) async {
+  /// Handles user login.
+  ///
+  /// Sends a login request to the AuthService and processes the response. If login is successful,
+  /// it saves the user token and user data to secure storage and updates the authentication status.
+  /// Displays an error message if login fails.
+  Future<void> login(String email, String password, {required BuildContext context}) async {
     debugPrint(_userToken);
     debugPrint(isAuthenticated.toString());
     _setLoading(true);
@@ -72,7 +80,6 @@ class AuthProvider with ChangeNotifier {
       var userAfter = await _secureStorage.getUser();
       debugPrint(userAfter.toString());
       _setLoading(false);
-
       notifyListeners();
     } else {
       // Handle login error
@@ -90,26 +97,38 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<void> register(String email, String password,{required BuildContext context}) async {
-    _setLoading(true,login: false);
+  /// Handles user registration.
+  ///
+  /// Sends a registration request to the AuthService and processes the response. If registration is successful,
+  /// it automatically logs in the user. Displays an error message if registration fails.
+  Future<void> register(String email, String password, {required BuildContext context}) async {
+    _setLoading(true, login: false);
     final result = await _authService.register(email, password);
     if (result.containsKey('created')) {
-      // Handle successful registration,
-      if(context.mounted) {
+      // Handle successful registration
+      if (context.mounted) {
         await login(email, password, context: context);
       }
-      _setLoading(false,login: false);
+      _setLoading(false, login: false);
     } else {
       // Handle registration error
       debugPrint("error is ${result['message'].toString()}");
-      _setLoading(false,login: false);
+      _setLoading(false, login: false);
       if (context.mounted) {
         showFloatingSnackBar(
-            context, result['message'], Palette.kDangerRedColor,textColor:Palette.kOffWhiteColor);
+          context,
+          result['message'],
+          Palette.kDangerRedColor,
+          textColor: Palette.kOffWhiteColor,
+        );
       }
     }
   }
 
+  /// Handles user logout.
+  ///
+  /// Clears the authentication token, updates the authentication status, and logs out the user.
+  /// It also removes the token and user data from secure storage.
   Future<void> logout() async {
     _userToken = '';
     _isAuthenticated = false;
@@ -119,6 +138,9 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  /// Validates if the provided string is a valid email address.
+  ///
+  /// Uses a regular expression to check the format of the email address.
   static bool isEmail(String em) {
     String p =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
