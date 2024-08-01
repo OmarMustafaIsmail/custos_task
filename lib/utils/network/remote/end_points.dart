@@ -1,5 +1,5 @@
 class ApiConstants {
-  static const baseUrl = 'https://equalfall-us.backendless.app';
+  static const baseUrl = '';
   static const registerUser = '/api/users/register';
   static const loginUser = '/api/users/login';
   static const logoutUser = '/api/users/logout';

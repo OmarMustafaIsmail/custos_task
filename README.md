@@ -9,7 +9,6 @@ This is a Flutter web application for the Custos Task project.
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Backendless Configuration](#backendless-configuration)
-- [Running the App](#running-the-app)
 
 
 ## Introduction
@@ -51,7 +50,7 @@ Before you begin, ensure you have met the following requirements:
 
     - Login to your backendless account 
     - create an app
-    - copy the custom domain and replace the baseUrl in lib/utils/network/remote/end_points.dart with your domain
-
+    - copy the Backendless subdomain and replace the baseUrl in lib/utils/network/remote/end_points.dart with your domain
+        note: MAKE SURE TO ADD https:// before your subdomain
     
 
