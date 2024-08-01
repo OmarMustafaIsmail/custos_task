@@ -1,16 +1,57 @@
-# custos_task
+# Custos Task
 
-A new Flutter project.
+This is a Flutter web application for the Custos Task project.
 
-## Getting Started
+## Table of Contents
 
-This project is a starting point for a Flutter application.
+- [Introduction](#introduction)
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Backendless Configuration](#backendless-configuration)
+- [Running the App](#running-the-app)
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Introduction
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Custos Task is a web application built with Flutter. The project aims to demonstrate various features and functionalities using the Flutter framework.
+
+## Features
+
+- Responsive design for different screen sizes (mobile, tablet, desktop).
+- Integration with Backendless for backend services.
+- File uploads , displaying, and downloading
+
+## Prerequisites
+
+Before you begin, ensure you have met the following requirements:
+
+- [Flutter SDK](https://flutter.dev/docs/get-started/install) installed
+- [Backendless Account](https://backendless.com/) for backend services
+- A code editor like [Visual Studio Code](https://code.visualstudio.com/) or [Android Studio](https://developer.android.com/studio)
+
+## Installation
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/OmarMustafaIsmail/custos_task.git
+   cd custos_task
+
+2. **Install dependencies:**
+
+    ```bash
+    flutter pub get
+
+
+
+## backendless-configuration
+
+1. **Manage Backendless:**
+
+    - Login to your backendless account 
+    - create an app
+    - copy the custom domain and replace the baseUrl in lib/utils/network/remote/end_points.dart with your domain
+
+    
+
