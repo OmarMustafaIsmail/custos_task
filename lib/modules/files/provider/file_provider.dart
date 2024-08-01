@@ -62,6 +62,13 @@ class FileProvider with ChangeNotifier {
     }
   }
 
+
+  /// This function takes a byte value and converts it into a string representation
+  /// with the most suitable unit (Bytes, KB, MB, GB, TB). It uses a logarithmic
+  /// scale to determine the appropriate unit and formats the value to two decimal places.
+  ///
+  /// [bytes] is the number of bytes to be converted.
+  /// Returns a formatted string representing the byte value with its unit.
   String formatBytes(int bytes,) {
     if (bytes <= 0) return "0 Bytes";
     const suffixes = ["Bytes", "KB", "MB", "GB", "TB"];
@@ -69,6 +76,16 @@ class FileProvider with ChangeNotifier {
     final value = bytes / math.pow(1024, i);
     return "${value.toStringAsFixed(2)} ${suffixes[i]}";
   }
+
+
+
+  /// Determines if a file path refers to an image file based on its extension.
+  ///
+  /// This function checks if the file extension of the given file path matches
+  /// a predefined list of common image file extensions. It is case-insensitive.
+  ///
+  /// [filePath] is the path of the file to be checked.
+  /// Returns `true` if the file extension matches one of the image types, otherwise `false`.
   bool isImageFile(String filePath) {
     // List of image file extensions
     final imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];

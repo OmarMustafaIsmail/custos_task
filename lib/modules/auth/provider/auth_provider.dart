@@ -8,6 +8,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 
+/// AuthRepository is a data repository for handling authentication-related operations.
+/// It communicates with the AuthService to perform login, registration, etc.
 class AuthProvider with ChangeNotifier {
   final SecureStorageService _secureStorage = SecureStorageService();
   final AuthService _authService = AuthService();
@@ -20,19 +22,30 @@ class AuthProvider with ChangeNotifier {
   bool get isLoadingRegister => _isLoadingRegister;
 
 
+  /// Initializes the authentication process by checking if a user token is available.
+  ///
+  /// This function retrieves the user token from secure storage. If a token is found, it sets
+  /// the user as authenticated, updates the internal state, and navigates to the layout page.
+  /// If no token is found, it navigates to the home page.
+  ///
+  /// This function is asynchronous and uses the `await` keyword to wait for the token retrieval.
   init()async{
     debugPrint("started init");
    final token = await _secureStorage.getUserToken();
    debugPrint(token.toString());
    if(token !=null){
+     // user is authenticated redirect to layout
      router.go('/layout');
      _isAuthenticated = true;
      _userToken = token;
      notifyListeners();
      return;
    }
-   router.go('/');
+    // user is not authenticated redirect to login page
+
+    router.go('/');
   }
+
   void _setLoading(bool value,{bool login = true}) {
     if(login) {
       _isLoadingLogin = value;

@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
+/// MainLayout provides the main structure of the app.
+/// It includes the Scaffold with an AppBar, body, and side navigation.
 class AppLayoutScreen extends StatelessWidget {
   const AppLayoutScreen({super.key});
 
